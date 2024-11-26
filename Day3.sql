@@ -41,6 +41,25 @@ select product_id from products
 where low_fats ='Y'
 and recyclable ='Y'
 --Ex 10
-
+select name from customer
+where not referee_id = 2 or referee_id is null -- Doi voi gia tri null phai su dun is null
+--Ex 11
+select name, population, area from world
+where population >= 25000000
+or area >= 3000000
+--Ex 12
+select distinct author_id as id from views 
+where author_id = viewer_id
+order by author_id
+--Ex 13
+SELECT part FROM parts_assembly
+WHERE finish_date IS NULL
+--Ex 14
+select yearly_salary from lyft_drivers;
+where yearly_salary <= 30000 or >= 700000
+--Ex 15
+select * from uber_advertising;
+where year = 2019
+and money_spent >= 100000
 
 
