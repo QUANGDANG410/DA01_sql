@@ -33,3 +33,7 @@ and extract (year from sent_date )=2022
 group by sender_id
 order by message_count desc 
 limit 2
+-- Ex.6
+select tweet_id    
+from Tweets
+where length (content)>15
