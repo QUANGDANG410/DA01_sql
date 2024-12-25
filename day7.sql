@@ -37,3 +37,26 @@ limit 2
 select tweet_id    
 from Tweets
 where length (content)>15
+-- Ex.7
+select
+activity_date as day,
+count(distinct user_id) as active_users
+from activity
+where activity_date between '2019-06-26' and '2019-07-27'
+group by activity_date
+-- Ex.8
+select 
+count (id) as number_of_employees
+from employees
+where extract (month from joining_date) between 1 and 7
+and extract (year from joining_date)=2022
+-- Ex.9
+select 
+position ('a' in first_name)
+from worker
+where first_name='Amitah'
+-- Ex.10
+select
+title,
+substring (title,length(winery)+2,4) as year
+from winemag_p2
