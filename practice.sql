@@ -43,6 +43,16 @@ SELECT
     ON act.user_id = ab.user_id
     GROUP BY
       ab.age_bucket
+--Ex5:
+SELECT 
+    emp.employee_id, 
+    emp.name,
+    COUNT(mng.reports_to) AS reports_count,
+    ROUND(AVG(mng.age),0) AS average_age
+FROM employees AS emp
+JOIN employees AS mng
+ON emp.employee_id=mng.reports_to
+GROUP BY emp.employee_id, emp.name
 --Ex6: 
 SELECT p.product_name  ,
     SUM(o.unit) AS unit
@@ -52,3 +62,24 @@ ON p.product_id =o.product_id
 WHERE order_date >= '2020-02-01'  AND order_date <= '2020-02-29'
 GROUP BY p.product_name 
 HAVING (SUM(o.unit)) >= 100
+--Ex7:
+SELECT
+  pages.page_id
+FROM pages LEFT JOIN page_likes ON pages.page_id=page_likes.page_id
+WHERE liked_date IS NULL
+ORDER BY page_id
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
