@@ -51,7 +51,31 @@ FROM loc_data
 WHERE liked_date IS NULL 
 ORDER by page_id
 Ex.5:
+WITH 
+user_thang_6 AS
+(SELECT 
+  user_id, event_date
+FROM user_actions
+WHERE event_date BETWEEN '06/01/2022' AND '06/30/2022'),
 
+user_thang_7 AS
+(SELECT 
+  user_id, event_date
+FROM user_actions
+WHERE event_date BETWEEN '07/01/2022' AND '07/31/2022'),
+
+tong_hop AS 
+(SELECT
+user_thang_7.user_id, 
+user_thang_7.event_date
+FROM user_thang_7 
+JOIN user_thang_6 ON user_thang_7.user_id=user_thang_6.user_id)
+
+SELECT
+EXTRACT (month from event_date) AS mth ,
+COUNT (DISTINCT user_id) AS monthly_active_users
+FROM tong_hop 
+GROUP BY EXTRACT (month from event_date)
 
 
 
