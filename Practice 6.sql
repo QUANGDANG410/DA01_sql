@@ -77,9 +77,53 @@ COUNT (DISTINCT user_id) AS monthly_active_users
 FROM tong_hop 
 GROUP BY EXTRACT (month from event_date)
 
+Ex.6: 
+-- Tính số lượng giao dịch approved và tổng số tiền, nhóm theo tháng
+WITH approve AS
+(SELECT 
+    TO_CHAR(trans_date,'YYYY-MM') AS month,
+    country,
+    SUM (amount) AS approved_total_amount,
+    COUNT (id) AS approved_count
+FROM transactions
+WHERE state='approved'
+GROUP BY TO_CHAR(trans_date,'YYYY-MM'), country),
 
+-- Tính số lượng giao dịch và tổng số tiền , nhóm theo tháng
+trans AS
+(SELECT 
+    TO_CHAR(trans_date,'YYYY-MM') AS month,
+    country,
+    SUM (amount) AS trans_total_amount,
+    COUNT (id) AS trans_count
+FROM transactions
+GROUP BY TO_CHAR(trans_date,'YYYY-MM'), country)
 
+SELECT 
+    trans.month,
+    trans.country,
+    trans.trans_count,
+    approve.approved_count,
+    trans.trans_total_amount,
+    approve.approved_total_amount
+FROM approve
+JOIN trans ON approve.month=trans.month
+WHERE trans.month=approve.month
+AND trans.country=approve.country
+ORDER BY trans.month
 
+Ex.7:
+SELECT 
+    product_id, year AS first_year, quantity, price
+FROM sales
+WHERE year IN (SELECT MIN(year) FROM sales GROUP BY product_id)
+GROUP BY product_id, quantity, price, year
+
+Ex.8:
+SELECT customer_id
+FROM customer
+GROUP BY customer_id
+HAVING COUNT(customer_id)= (SELECT COUNT(product_key) FROM product)
 
 
 
