@@ -125,7 +125,83 @@ FROM customer
 GROUP BY customer_id
 HAVING COUNT(customer_id)= (SELECT COUNT(product_key) FROM product)
 
+Ex.9: 
+SELECT 
+    employee_id
+FROM employees
+WHERE salary<30000
+AND manager_id = (SELECT
+    manager_id
+FROM employees
+WHERE manager_id NOT IN (SELECT employee_id FROM employees))
 
+Ex.10:
+WITH so_luong_job 
+AS
+(SELECT company_id, title, description,
+COUNT (job_id) AS count_job
+FROM job_listings
+GROUP BY company_id, title, description)
+
+SELECT COUNT(company_id) AS duplicate_companies
+FROM so_luong_job
+WHERE count_job>1
+
+Ex.11:
+-- Tìm tên của user_id có số lượng film đã rate nhiều nhất
+WITH cte_max AS
+(SELECT 
+    name AS results
+FROM (SELECT 
+    Users.name,
+    COUNT (rating) AS count_rating
+FROM Users JOIN MovieRating ON Users.user_id = MovieRating.user_id
+GROUP BY Users.name)
+WHERE count_rating= (SELECT MAX(count_rating) FROM (SELECT 
+    Users.name,
+    COUNT (rating) AS count_rating
+FROM Users JOIN MovieRating ON Users.user_id = MovieRating.user_id
+GROUP BY Users.name))
+ORDER BY results
+LIMIT 1),
+
+-- Tìm tên phim có trung bình rating lớn nhất
+cte_avg AS
+(SELECT 
+    title AS results
+FROM (SELECT 
+    Movies.title,
+    AVG(rating) AS avg_rating
+FROM Movies JOIN MovieRating ON Movies.movie_id = MovieRating.movie_id
+WHERE created_at BETWEEN '2020-02-01' AND '2020-02-28' 
+GROUP BY Movies.title)
+WHERE avg_rating = (SELECT MAX(avg_rating) FROM (SELECT 
+    Movies.title,
+    AVG(rating) AS avg_rating
+FROM Movies JOIN MovieRating ON Movies.movie_id = MovieRating.movie_id
+WHERE created_at BETWEEN '2020-02-01' AND '2020-02-28' 
+GROUP BY Movies.title))
+ORDER BY results
+LIMIT 1)
+
+SELECT results FROM cte_max
+UNION
+SELECT results FROM cte_avg
+
+Ex.12:
+WITH cte1 AS
+(SELECT requester_id AS id FROM RequestAccepted),
+cte2 AS 
+(SELECT accepter_id AS id FROM RequestAccepted)
+
+SELECT id,
+    COUNT (id) AS num
+FROM (SELECT id FROM cte1
+UNION ALL 
+SELECT id FROM cte2)
+GROUP BY id
+ORDER BY num DESC
+LIMIT 1
 
 
 
